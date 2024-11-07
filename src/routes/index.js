@@ -6,15 +6,18 @@ import ProductPage from "../pages/ProductPage/ProductPage";
 export const routes = [
     {
         path: '/',
-        page:HomePage
+        page:HomePage,
+        isShowHeader: true
     },
     {
-        path: '/',
-        page:OrderPage
+        path: '/order',
+        page:OrderPage,
+        isShowHeader: true
     },
     {
-        path: '/',
-        page:ProductPage
+        path: '/product',
+        page:ProductPage,
+        isShowHeader: true
     },
     {
         path: '*',
