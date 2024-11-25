@@ -11,7 +11,7 @@ const CardComponent = () => {
   bodyStyle={{ padding: '10px' }}
   cover={<img alt="example" src="https://laptopcu24h.vn/storage/products/6016/3S2KXSzZjnXTECdGJAan.jpg" />}
 >
-  <StyleNameProduct>Iphone</StyleNameProduct>
+  <StyleNameProduct>LAPTOP ASUS TUF GAMING F15 FX506LH</StyleNameProduct>
   <WrapperReportText>
     <span style={{ marginRight: '4px' }}>
       <span>4.96 </span> 
@@ -20,7 +20,7 @@ const CardComponent = () => {
     <span> | Còn hàng </span>
   </WrapperReportText>
   <WrapperPriceText>
-        11.990.000đ
+    <span style={{ marginRight: "8px" }}>11.900.000đ</span>
     <WrapperDiscountText>
       
     </WrapperDiscountText>

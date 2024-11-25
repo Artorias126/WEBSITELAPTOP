@@ -4,7 +4,7 @@ import { WrapperLableText, WrapperTextValue, WrapperTextPrice, WrapperContent } 
 
 const NavBarComponent = () => {
   const onChange = (value) => {
-    console.log(value); // Xử lý giá trị khi thay đổi
+    console.log(value); 
   };
 
   const renderContent = (type, options) => {

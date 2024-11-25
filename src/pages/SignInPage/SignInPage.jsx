@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import InputForm from "../../components/InputForm/InputForm";
 import imageLogo from "../../assets/images/logo.png";
 import { WrapperContainerLeft, WrapperTextLight, WrapperContainerRight } from "./style";
+import { EyeInvisibleFilled, EyeFilled } from "@ant-design/icons"; // Import icon
 
 const SignInPage = () => {
+  const [isShowPassword, setIsShowPassword] = useState(false); // Trạng thái hiển thị mật khẩu
+
+  const togglePasswordVisibility = () => {
+    setIsShowPassword((prev) => !prev); // Chuyển đổi trạng thái khi click vào icon
+  };
+
   return (
     <div
       style={{
@@ -30,9 +37,8 @@ const SignInPage = () => {
         {/* Container Left */}
         <WrapperContainerLeft style={{ flex: 3, padding: "40px" }}>
           <h1 style={{ fontSize: "28px", marginBottom: "10px" }}>Xin chào</h1>
-          <p style={{ marginBottom: "20px", color: "#666" }}>
-            Đăng nhập để mua sắm
-          </p>
+          <p style={{ marginBottom: "20px", color: "#666" }}>Đăng nhập để mua sắm</p>
+          
           <InputForm
             placeholder="abc@gmail.com"
             style={{
@@ -41,14 +47,32 @@ const SignInPage = () => {
               borderRadius: "4px",
             }}
           />
-          <InputForm
-            placeholder="password"
-            style={{
-              marginBottom: "16px",
-              padding: "12px 16px",
-              borderRadius: "4px",
-            }}
-          />
+          
+          <div style={{ position: 'relative' }}>
+            <InputForm
+              placeholder="password"
+              type={isShowPassword ? "text" : "password"} // Kiểm tra trạng thái hiển thị mật khẩu
+              style={{
+                marginBottom: "16px",
+                padding: "12px 16px",
+                borderRadius: "4px",
+              }}
+            />
+            {/* Icon hiển thị/mở khóa mật khẩu */}
+            <span
+              style={{
+                zIndex: 10,
+                position: 'absolute',
+                top: '4px',
+                right: '8px',
+                cursor: 'pointer',
+              }}
+              onClick={togglePasswordVisibility}
+            >
+              {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
+            </span>
+          </div>
+
           <ButtonComponent
             bordered={false}
             size={40}

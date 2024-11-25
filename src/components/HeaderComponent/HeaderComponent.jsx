@@ -1,50 +1,53 @@
 import React from 'react';
 import { Badge, Col } from 'antd';
+import { UserOutlined, CaretDownOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import {
-  UserOutlined,
-  CaretDownOutlined,
-  ShoppingCartOutlined,
-} from '@ant-design/icons';
-import { WrapperHeader, WrapperTextHeader, WrapperHeaderAccount, WrapperTextHeaderSmall } from './style';
+  WrapperHeader,
+  WrapperTextHeader,
+  WrapperHeaderAccount,
+  WrapperTextHeaderSmall,
+} from './style';
 import ButtonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
 
-function HeaderComponent() {
+const HeaderComponent = () => {
   return (
-    <div>
-      <WrapperHeader>
-        <Col span={6}>
-          <WrapperTextHeader>DUYLAPTOP</WrapperTextHeader>
-        </Col>
-        <Col span={12}>
-          <ButtonInputSearch 
-            size="large"
-            textButton="Tìm kiếm"
-            placeholder="input search text"
-            // onSearch={onSearch}
-          />
-        </Col>
-        <Col span={6} style={{ display: 'flex', alignItems:'center', gap: '20px' }}>
-          <WrapperHeaderAccount>
-              <UserOutlined style={{ fontSize: '30px', }} />
-              <div>
-                <WrapperTextHeaderSmall>Đăng Nhập/Đăng Kí</WrapperTextHeaderSmall>
-                <div>
-                  <WrapperTextHeaderSmall>Tài Khoản</WrapperTextHeaderSmall>
-                  <CaretDownOutlined />
-                </div>
-              </div>
+    <WrapperHeader>
+      {/* Logo Section */}
+      <Col span={5} style={{ textAlign: 'left' }}>
+        <WrapperTextHeader>DUYLAPTOP</WrapperTextHeader>
+      </Col>
 
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Badge count={4} size="small" style={{ marginRight: '5px' }}>
-                <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
-              </Badge>
-              <WrapperTextHeaderSmall>Giỏ Hàng</WrapperTextHeaderSmall>
+      {/* Search Bar Section */}
+      <Col span={13} style={{ padding: '0 16px' }}>
+        <ButtonInputSearch
+          size="large"
+          bordered={false}
+          textButton="Tìm kiếm"
+          placeholder="Nhập nội dung tìm kiếm"
+        />
+      </Col>
+
+      {/* Account and Cart Section */}
+      <Col span={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '16px' }}>
+        <WrapperHeaderAccount>
+          <UserOutlined style={{ fontSize: '30px' }} />
+          <div>
+            <WrapperTextHeaderSmall>Đăng nhập/Đăng ký</WrapperTextHeaderSmall>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <WrapperTextHeaderSmall>Tài khoản</WrapperTextHeaderSmall>
+              <CaretDownOutlined />
             </div>
-          </WrapperHeaderAccount>
-        </Col>
-      </WrapperHeader>
-    </div>
+          </div>
+        </WrapperHeaderAccount>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Badge count={4} size="small">
+            <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
+          </Badge>
+          <WrapperTextHeaderSmall>Giỏ hàng</WrapperTextHeaderSmall>
+        </div>
+      </Col>
+    </WrapperHeader>
   );
-}
+};
 
 export default HeaderComponent;

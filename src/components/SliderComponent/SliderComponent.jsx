@@ -1,6 +1,6 @@
-import { Image } from 'antd';
-import React from 'react';
-import Slider from 'react-slick';
+import React from "react";
+import { Image } from "antd";
+import { WrapperSliderStyle } from "./style";
 
 const SliderComponent = ({ arrImages }) => {
   const settings = {
@@ -9,18 +9,25 @@ const SliderComponent = ({ arrImages }) => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true, 
-    autoplaySpeed: 1500, 
+    autoplay: true,
+    autoplaySpeed: 1000,
   };
 
   return (
-    <Slider {...settings}>
+    <WrapperSliderStyle {...settings}>
       {arrImages.map((image, index) => (
         <div key={index}>
-          <Image src={image} alt={`slider-${index}`} preview={false} width="100%" height="500px" />
+          <Image
+            src={image}
+            alt={`slider-${index}`}
+            preview={false}
+            width="100%"
+            height="500px"
+            style={{ objectFit: "cover" }} // Đảm bảo ảnh vừa khung
+          />
         </div>
       ))}
-    </Slider>
+    </WrapperSliderStyle>
   );
 };
 
