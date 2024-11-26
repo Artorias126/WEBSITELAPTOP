@@ -16,8 +16,8 @@ const SliderComponent = ({ arrImages }) => {
   return (
     <WrapperSliderStyle {...settings}>
       {arrImages.map((image, index) => (
-        <div key={index}>
           <Image
+            key={image}
             src={image}
             alt={`slider-${index}`}
             preview={false}
@@ -25,7 +25,6 @@ const SliderComponent = ({ arrImages }) => {
             height="500px"
             style={{ objectFit: "cover" }} // Đảm bảo ảnh vừa khung
           />
-        </div>
       ))}
     </WrapperSliderStyle>
   );
