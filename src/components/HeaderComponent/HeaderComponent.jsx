@@ -8,8 +8,14 @@ import {
   WrapperTextHeaderSmall,
 } from './style';
 import ButtonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderComponent = () => {
+  const navigate = useNavigate();
+
+  const handleNavigateLogin = () => {
+    navigate('sign-in');
+  };
   return (
     <WrapperHeader>
       {/* Logo Section */}
@@ -21,7 +27,6 @@ const HeaderComponent = () => {
       <Col span={13} style={{ padding: '0 16px' }}>
         <ButtonInputSearch
           size="large"
-          bordered={false}
           textButton="Tìm kiếm"
           placeholder="Nhập nội dung tìm kiếm"
         />
@@ -31,7 +36,7 @@ const HeaderComponent = () => {
       <Col span={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '16px' }}>
         <WrapperHeaderAccount>
           <UserOutlined style={{ fontSize: '30px' }} />
-          <div>
+          <div onClick={handleNavigateLogin} style={{ cursor: 'pointer' }}>
             <WrapperTextHeaderSmall>Đăng nhập/Đăng ký</WrapperTextHeaderSmall>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <WrapperTextHeaderSmall>Tài khoản</WrapperTextHeaderSmall>

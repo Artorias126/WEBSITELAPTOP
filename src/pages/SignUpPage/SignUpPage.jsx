@@ -3,11 +3,44 @@ import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import InputForm from "../../components/InputForm/InputForm";
 import imageLogo from "../../assets/images/logo.png";
 import { WrapperContainerLeft, WrapperTextLight, WrapperContainerRight } from "./style";
-import { EyeInvisibleFilled, EyeFilled } from "@ant-design/icons"; // Import icon
+import { EyeInvisibleFilled, EyeFilled } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
-  const [isShowPassword, setIsShowPassword] = useState(false); // Trạng thái hiển thị mật khẩu
-  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false); // Trạng thái hiển thị mật khẩu xác nhận
+  const navigate = useNavigate();
+
+  const handleNavigateSignIn = () => {
+    navigate("/sign-in");
+  };
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
+
+  const handleOnchangeEmail = (value) => {
+    setEmail(value);
+  };
+
+  const handleOnchangePassword = (value) => {
+    setPassword(value);
+  };
+
+  const handleOnchangeConfirmPassword = (value) => {
+    setConfirmPassword(value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setIsShowPassword((prev) => !prev);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setIsShowConfirmPassword((prev) => !prev);
+  };
+
+  // Kiểm tra nút có bị vô hiệu hóa hay không
+  const isDisabled = !email.trim() || !password.trim() || !confirmPassword.trim();
 
   return (
     <div
@@ -35,70 +68,81 @@ const SignUpPage = () => {
         <WrapperContainerLeft style={{ flex: 3, padding: "40px" }}>
           <h1 style={{ fontSize: "28px", marginBottom: "10px" }}>Xin chào</h1>
           <p style={{ marginBottom: "20px", color: "#666" }}>Đăng ký để tạo tài khoản</p>
+
+          {/* Email */}
           <InputForm
-            placeholder="abc@gmail.com"
             style={{
               marginBottom: "16px",
               padding: "12px 16px",
               borderRadius: "4px",
             }}
+            placeholder="abc@gmail.com"
+            value={email}
+            onChange={handleOnchangeEmail}
           />
-          
+
           {/* Mật khẩu */}
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: "relative" }}>
             <InputForm
               placeholder="Password"
-              type={isShowPassword ? "text" : "password"} // Kiểm tra trạng thái hiển thị mật khẩu
+              type={isShowPassword ? "text" : "password"}
+              value={password}
+              onChange={handleOnchangePassword}
               style={{
                 marginBottom: "16px",
                 padding: "12px 16px",
                 borderRadius: "4px",
               }}
             />
+            {/* Icon hiển thị/mở khóa mật khẩu */}
             <span
+              onClick={togglePasswordVisibility}
               style={{
                 zIndex: 10,
-                position: 'absolute',
-                top: '4px',
-                right: '8px',
-                cursor: 'pointer',
+                position: "absolute",
+                top: "4px",
+                right: "8px",
+                cursor: "pointer",
               }}
-              onClick={() => setIsShowPassword(!isShowPassword)} // Toggle trạng thái khi click vào icon
             >
               {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
             </span>
           </div>
 
           {/* Xác nhận mật khẩu */}
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: "relative" }}>
             <InputForm
               placeholder="Confirm password"
-              type={isShowConfirmPassword ? "text" : "password"} // Dùng trạng thái riêng cho confirm password
+              type={isShowConfirmPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={handleOnchangeConfirmPassword}
               style={{
                 marginBottom: "16px",
                 padding: "12px 16px",
                 borderRadius: "4px",
               }}
             />
+            {/* Icon hiển thị/mở khóa mật khẩu */}
             <span
+              onClick={toggleConfirmPasswordVisibility}
               style={{
                 zIndex: 10,
-                position: 'absolute',
-                top: '4px',
-                right: '8px',
-                cursor: 'pointer',
+                position: "absolute",
+                top: "4px",
+                right: "8px",
+                cursor: "pointer",
               }}
-              onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)} // Toggle trạng thái khi click vào icon
             >
               {isShowConfirmPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
             </span>
           </div>
 
+          {/* Button */}
           <ButtonComponent
-            bordered={false}
             size={40}
+            disabled={isDisabled} // Nút bị vô hiệu hóa khi chưa nhập đủ thông tin
             styleButton={{
-              background: "rgb(255, 57, 69)",
+              background: isDisabled ? "#ccc" : "rgb(255, 57, 69)",
               height: "48px",
               width: "100%",
               border: "none",
@@ -113,7 +157,10 @@ const SignUpPage = () => {
             }}
           />
           <p style={{ marginTop: "5px" }}>
-            Bạn đã có tài khoản? <WrapperTextLight>Đăng nhập</WrapperTextLight>
+            Bạn đã có tài khoản?{" "}
+            <WrapperTextLight onClick={handleNavigateSignIn} style={{ cursor: "pointer" }}>
+              Đăng nhập
+            </WrapperTextLight>
           </p>
         </WrapperContainerLeft>
 
