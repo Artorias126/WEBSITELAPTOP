@@ -1,24 +1,56 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import InputForm from "../../components/InputForm/InputForm";
 import imageLogo from "../../assets/images/logo.png";
 import { WrapperContainerLeft, WrapperTextLight, WrapperContainerRight } from "./style";
 import { EyeInvisibleFilled, EyeFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
+import * as message from "../../components/Message/Message";
+import { jwtDecode } from 'jwt-decode';
+import { useDispatch } from "react-redux";
+import { updateUser } from "../../redux/slice/userSlide";
+
 
 const SignInPage = () => {
   const navigate = useNavigate();
 
   const mutation = useMutationHooks((data) => UserService.loginUser(data));
-  const { data, isPending } = mutation;
+  const { data, isPending, isSuccess, isError } = mutation;
+
+  useEffect(() => {
+    if (isSuccess && data?.status !== 'ERR') {
+      navigate('/');
+      localStorage.setItem('access_token', data?.access_token);
+  
+      if (data?.access_token) {
+        const decoded = jwtDecode(data?.access_token);
+        console.log('decode', decoded);
+  
+        if (decoded?.id) {
+          handleGetDetailsUser(decoded?.id, data?.access_token);
+        }
+      }
+    }
+  }, [isSuccess]);
+  
+  const handleGetDetailsUser = async (id, token) => { 
+    const res = await UserService.getDetailsUser(id, token); 
+    console.log('User details:', res?.data); // Kiểm tra dữ liệu trả về từ API
+    dispatch(updateUser({
+      ...res?.data, 
+      access_token: token
+    }));
+  };
+  
+  
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSignIn = () => {
     mutation.mutate({

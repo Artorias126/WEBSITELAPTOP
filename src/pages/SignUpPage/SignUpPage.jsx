@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import InputForm from "../../components/InputForm/InputForm";
 import imageLogo from "../../assets/images/logo.png";
 import { WrapperContainerLeft, WrapperTextLight, WrapperContainerRight } from "./style";
 import { EyeInvisibleFilled, EyeFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import * as UserService from "../../services/UserService";
+import { useMutationHooks } from "../../hooks/useMutationHook";
+import Loading from "../../components/LoadingComponent/Loading";
+import * as message from "../../components/Message/Message";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -12,6 +16,19 @@ const SignUpPage = () => {
   const handleNavigateSignIn = () => {
     navigate("/sign-in");
   };
+
+  const mutation = useMutationHooks((data) => UserService.signupUser(data));
+  const { data, isPending, isSuccess, isError } = mutation;
+
+  useEffect(() => { 
+    if (isSuccess) { 
+      message.success(); 
+      handleNavigateSignIn()
+    } else if (isError) { 
+      message.error(); 
+    } 
+  }, [isSuccess, isError]);
+  
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,6 +54,15 @@ const SignUpPage = () => {
 
   const toggleConfirmPasswordVisibility = () => {
     setIsShowConfirmPassword((prev) => !prev);
+  };
+
+  const handleSignUp = () => {
+    mutation.mutate({
+      email,
+      password,
+      confirmPassword,
+    });
+    console.log("sign-up", email, password, confirmPassword);
   };
 
   // Kiểm tra nút có bị vô hiệu hóa hay không
@@ -82,6 +108,9 @@ const SignUpPage = () => {
           />
 
           {/* Mật khẩu */}
+          {data?.status === "ERR" && (
+            <span style={{ color: "red" }}>{data?.message}</span>
+          )}
           <div style={{ position: "relative" }}>
             <InputForm
               placeholder="Password"
@@ -138,8 +167,10 @@ const SignUpPage = () => {
           </div>
 
           {/* Button */}
+          <Loading isPending={isPending}>
           <ButtonComponent
             size={40}
+            onClick={handleSignUp} 
             disabled={isDisabled} // Nút bị vô hiệu hóa khi chưa nhập đủ thông tin
             styleButton={{
               background: isDisabled ? "#ccc" : "rgb(255, 57, 69)",
@@ -156,6 +187,7 @@ const SignUpPage = () => {
               fontWeight: "700",
             }}
           />
+          </Loading>
           <p style={{ marginTop: "5px" }}>
             Bạn đã có tài khoản?{" "}
             <WrapperTextLight onClick={handleNavigateSignIn} style={{ cursor: "pointer" }}>
