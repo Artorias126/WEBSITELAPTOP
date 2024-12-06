@@ -12,60 +12,47 @@ import * as message from "../../components/Message/Message";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const handleNavigateSignIn = () => navigate("/sign-in");
 
-  const handleNavigateSignIn = () => {
-    navigate("/sign-in");
-  };
+  // Mutation for signup
+  const mutation = useMutationHooks(async (data) => {
+    const response = await UserService.signupUser(data);
+    if (response.status === "ERR") {
+      throw new Error(response.message); // Xử lý lỗi
+    }
+    return response;
+  });
 
-  const mutation = useMutationHooks((data) => UserService.signupUser(data));
-  const { data, isPending, isSuccess, isError } = mutation;
+  const { data, isPending, isSuccess, isError, error } = mutation;
 
-  useEffect(() => { 
-    if (isSuccess) { 
-      message.success(); 
-      handleNavigateSignIn()
-    } else if (isError) { 
-      message.error(); 
-    } 
-  }, [isSuccess, isError]);
-  
+  useEffect(() => {
+    if (isSuccess) {
+      message.success("Đăng ký thành công!");
+      handleNavigateSignIn();
+    } else if (isError) {
+      // Hiển thị thông báo lỗi chi tiết từ server
+      message.error(error.message || "Đăng ký thất bại!");
+    }
+  }, [isSuccess, isError, error]);
 
+  // State for form
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
 
-  const handleOnchangeEmail = (value) => {
-    setEmail(value);
-  };
-
-  const handleOnchangePassword = (value) => {
-    setPassword(value);
-  };
-
-  const handleOnchangeConfirmPassword = (value) => {
-    setConfirmPassword(value);
-  };
-
-  const togglePasswordVisibility = () => {
-    setIsShowPassword((prev) => !prev);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setIsShowConfirmPassword((prev) => !prev);
-  };
+  // Form handlers
+  const handleOnchangeEmail = (value) => setEmail(value);
+  const handleOnchangePassword = (value) => setPassword(value);
+  const handleOnchangeConfirmPassword = (value) => setConfirmPassword(value);
+  const togglePasswordVisibility = () => setIsShowPassword((prev) => !prev);
+  const toggleConfirmPasswordVisibility = () => setIsShowConfirmPassword((prev) => !prev);
 
   const handleSignUp = () => {
-    mutation.mutate({
-      email,
-      password,
-      confirmPassword,
-    });
-    console.log("sign-up", email, password, confirmPassword);
+    mutation.mutate({ email, password, confirmPassword });
   };
 
-  // Kiểm tra nút có bị vô hiệu hóa hay không
   const isDisabled = !email.trim() || !password.trim() || !confirmPassword.trim();
 
   return (
@@ -90,7 +77,6 @@ const SignUpPage = () => {
           overflow: "hidden",
         }}
       >
-        {/* Container Left */}
         <WrapperContainerLeft style={{ flex: 3, padding: "40px" }}>
           <h1 style={{ fontSize: "28px", marginBottom: "10px" }}>Xin chào</h1>
           <p style={{ marginBottom: "20px", color: "#666" }}>Đăng ký để tạo tài khoản</p>
@@ -107,10 +93,10 @@ const SignUpPage = () => {
             onChange={handleOnchangeEmail}
           />
 
+          {/* Hiển thị lỗi */}
+          {isError && <span style={{ color: "red" }}>{error?.message}</span>}
+
           {/* Mật khẩu */}
-          {data?.status === "ERR" && (
-            <span style={{ color: "red" }}>{data?.message}</span>
-          )}
           <div style={{ position: "relative" }}>
             <InputForm
               placeholder="Password"
@@ -123,7 +109,6 @@ const SignUpPage = () => {
                 borderRadius: "4px",
               }}
             />
-            {/* Icon hiển thị/mở khóa mật khẩu */}
             <span
               onClick={togglePasswordVisibility}
               style={{
@@ -151,7 +136,6 @@ const SignUpPage = () => {
                 borderRadius: "4px",
               }}
             />
-            {/* Icon hiển thị/mở khóa mật khẩu */}
             <span
               onClick={toggleConfirmPasswordVisibility}
               style={{
@@ -166,27 +150,26 @@ const SignUpPage = () => {
             </span>
           </div>
 
-          {/* Button */}
           <Loading isPending={isPending}>
-          <ButtonComponent
-            size={40}
-            onClick={handleSignUp} 
-            disabled={isDisabled} // Nút bị vô hiệu hóa khi chưa nhập đủ thông tin
-            styleButton={{
-              background: isDisabled ? "#ccc" : "rgb(255, 57, 69)",
-              height: "48px",
-              width: "100%",
-              border: "none",
-              borderRadius: "4px",
-              margin: "20px 0 10px",
-            }}
-            textButton="Đăng ký"
-            styleTextButton={{
-              color: "#fff",
-              fontSize: "15px",
-              fontWeight: "700",
-            }}
-          />
+            <ButtonComponent
+              size={40}
+              onClick={handleSignUp}
+              disabled={isDisabled}
+              styleButton={{
+                background: isDisabled ? "#ccc" : "rgb(255, 57, 69)",
+                height: "48px",
+                width: "100%",
+                border: "none",
+                borderRadius: "4px",
+                margin: "20px 0 10px",
+              }}
+              textButton="Đăng ký"
+              styleTextButton={{
+                color: "#fff",
+                fontSize: "15px",
+                fontWeight: "700",
+              }}
+            />
           </Loading>
           <p style={{ marginTop: "5px" }}>
             Bạn đã có tài khoản?{" "}
