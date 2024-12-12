@@ -2,7 +2,17 @@ import React from 'react';
 import { StyleNameProduct, WrapperCardStyle, WrapperDiscountText, WrapperPriceText, WrapperReportText} from './style' 
 import { StarFilled } from '@ant-design/icons'
 
-const CardComponent = () => {
+const CardComponent = (props) => {
+  const {
+    countInStock,
+    description,
+    image,
+    name,
+    price,
+    rating,
+    type
+  } = props;
+
   return (
     <WrapperCardStyle
   hoverable
@@ -11,16 +21,16 @@ const CardComponent = () => {
   bodyStyle={{ padding: '10px' }}
   cover={<img alt="example" src="https://laptopcu24h.vn/storage/products/6016/3S2KXSzZjnXTECdGJAan.jpg" />}
 >
-  <StyleNameProduct>LAPTOP ASUS TUF GAMING F15 FX506LH</StyleNameProduct>
+  <StyleNameProduct>{name}</StyleNameProduct>
   <WrapperReportText>
     <span style={{ marginRight: '4px' }}>
-      <span>4.96 </span> 
+      <span>{rating} </span> 
       <StarFilled style={{ fontSize: '12px', color: 'yellow' }} />
     </span>
     <span> | Còn hàng </span>
   </WrapperReportText>
   <WrapperPriceText>
-    <span style={{ marginRight: "8px" }}>11.900.000đ</span>
+    <span style={{ marginRight: "8px" }}>{price}</span>
   </WrapperPriceText>
 </WrapperCardStyle>
 

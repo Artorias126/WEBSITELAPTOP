@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
-import * as message from "../../components/Message/Message";
 import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slice/userSlide";
@@ -18,12 +17,12 @@ const SignInPage = () => {
   const navigate = useNavigate();
 
   const mutation = useMutationHooks((data) => UserService.loginUser(data));
-  const { data, isPending, isSuccess, isError } = mutation;
+  const { data, isPending, isSuccess } = mutation;
 
   useEffect(() => {
     if (isSuccess && data?.status !== 'ERR') {
       navigate('/');
-      localStorage.setItem('access_token', data?.access_token);
+      localStorage.setItem('access_token', JSON.stringify(data?.access_token));
   
       if (data?.access_token) {
         const decoded = jwtDecode(data?.access_token);
