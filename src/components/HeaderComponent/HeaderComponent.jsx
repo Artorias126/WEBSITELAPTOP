@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as UserService from "../../services/UserService";
 import { resetUser } from '../../redux/slice/userSlide';
 
-const HeaderComponent = () => {
+const HeaderComponent = ({isHiddenSearch = false,isHiddenCart =false}) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch(); // Lấy dữ liệu người dùng từ Redux store
@@ -36,27 +36,32 @@ const HeaderComponent = () => {
 
   const content = (
     <div>
-      <WrapperContentPopup onClick={handleLogout}>Đăng xuất</WrapperContentPopup>
       <WrapperContentPopup onClick={() => navigate('/profile-user')} >Thông tin người dùng</WrapperContentPopup>
+      {user?.isAdmin && (
+        <WrapperContentPopup onClick={() => navigate('/system/admin')} >Quản lí hệ thống</WrapperContentPopup>
+      )}
+      <WrapperContentPopup onClick={handleLogout}>Đăng xuất</WrapperContentPopup>
     </div>
   );
 
   return (
-    <WrapperHeader>
+    <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenSearch ? 'space-between' : 'unset' }}>
       {/* Logo Section */}
       <Col span={5} style={{ textAlign: 'left' }}>
         <WrapperTextHeader>DUYLAPTOP</WrapperTextHeader>
       </Col>
 
       {/* Search Bar Section */}
-      <Col span={13} style={{ padding: '0 16px' }}>
+      {!isHiddenSearch && (
+        <Col span={13} style={{ padding: '0 16px' }}>
         <ButtonInputSearch
           size="large"
           textButton="Tìm kiếm"
           placeholder="Nhập nội dung tìm kiếm"
         />
       </Col>
-
+      )}
+      
       {/* Account and Cart Section */}
       <Col span={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '16px' }}>
         <WrapperHeaderAccount>
@@ -84,12 +89,14 @@ const HeaderComponent = () => {
         )}
 
         {/* Cart Section */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {!isHiddenCart && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Badge count={4} size="small">
             <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
           </Badge>
           <WrapperTextHeaderSmall>Giỏ hàng</WrapperTextHeaderSmall>
         </div>
+        )}
       </Col>
     </WrapperHeader>
   );
