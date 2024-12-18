@@ -8,7 +8,10 @@ import slider3 from '../../assets/images/slider3.png';
 import CardComponent from '../../components/CardComponent/CardComponent';
 import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux'
+
 const HomePage = () => {
+  const product = useSelector((state) => state.product) 
   const arr = ['ASUS', 'LENOVO', 'DELL'];
 
   const fetchProductAll = async () => {
@@ -29,7 +32,7 @@ const { isLoading, data: products } = useQuery({
     retryDelay: 1000,
 });
 
-console.log('data', products);
+console.log('data', product);
 
   return (
     <>

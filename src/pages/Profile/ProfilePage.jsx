@@ -91,53 +91,67 @@ const ProfilePage = () => {
     <div style={{ width: '1270px', margin: '0 auto', height: '500px' }}>
       <WrapperHeader>Thông tin người dùng</WrapperHeader>
       <Loading isPending={isPending}>
-        <WrapperContentProfile>
-          <WrapperInput>
-            <WrapperLabel htmlFor="email">Email</WrapperLabel>
-            <InputForm
-              style={{ width: '300px' }}
-              id="email"
-              value={email}
-              onChange={handleOnchangeEmail} // Không dùng optional chaining
-            />
-            <button onClick={handleUpdate}>Cập nhật</button>
-          </WrapperInput>
+  <WrapperContentProfile>
+    <WrapperInput>
+      <WrapperLabel htmlFor="email">Email</WrapperLabel>
+      <InputForm
+        style={{ width: '300px' }}
+        id="email"
+        value={email}
+        onChange={handleOnchangeEmail} // Không dùng optional chaining
+      />
+    </WrapperInput>
 
-          <WrapperInput>
-            <WrapperLabel htmlFor="name">Tên</WrapperLabel>
-            <InputForm
-              style={{ width: '300px' }}
-              id="name"
-              value={name}
-              onChange={handleOnchangeName} // Không dùng optional chaining
-            />
-            <button onClick={handleUpdate}>Cập nhật</button>
-          </WrapperInput>
+    <WrapperInput>
+      <WrapperLabel htmlFor="name">Tên</WrapperLabel>
+      <InputForm
+        style={{ width: '300px' }}
+        id="name"
+        value={name}
+        onChange={handleOnchangeName} // Không dùng optional chaining
+      />
+    </WrapperInput>
 
-          <WrapperInput>
-            <WrapperLabel htmlFor="phone">Số điện thoại</WrapperLabel>
-            <InputForm
-              style={{ width: '300px' }}
-              id="phone"
-              value={phone}
-              onChange={handleOnchangePhone} // Không dùng optional chaining
-            />
-            <button onClick={handleUpdate}>Cập nhật</button>
-          </WrapperInput>
+    <WrapperInput>
+      <WrapperLabel htmlFor="phone">Số điện thoại</WrapperLabel>
+      <InputForm
+        style={{ width: '300px' }}
+        id="phone"
+        value={phone}
+        onChange={handleOnchangePhone} // Không dùng optional chaining
+      />
+    </WrapperInput>
 
-          <WrapperInput>
-            <WrapperLabel htmlFor="address">Địa chỉ</WrapperLabel>
-            <InputForm
-              style={{ width: '300px' }}
-              id="address"
-              value={address }
-              onChange={handleOnchangeAddress} // Không dùng optional chaining
-            />
-            <button onClick={handleUpdate}>Cập nhật</button>
-          </WrapperInput>
+    <WrapperInput>
+      <WrapperLabel htmlFor="address">Địa chỉ</WrapperLabel>
+      <InputForm
+        style={{ width: '300px' }}
+        id="address"
+        value={address}
+        onChange={handleOnchangeAddress} // Không dùng optional chaining
+      />
+    </WrapperInput>
 
-        </WrapperContentProfile>
-      </Loading>
+    {/* Một nút Cập nhật */}
+    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      <button 
+        onClick={handleUpdate} 
+        style={{
+          padding: '6px 16px',
+          fontSize: '14px',
+          backgroundColor: '#1890ff',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}
+      >
+        Cập nhật
+      </button>
+    </div>
+  </WrapperContentProfile>
+</Loading>
+
     </div>
   );
 };

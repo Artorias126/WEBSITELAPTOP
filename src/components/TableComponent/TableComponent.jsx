@@ -1,63 +1,56 @@
-import {Table } from 'antd';
+import { Table } from 'antd';
 import React, { useState } from 'react';
 
+
 const TableComponent = (props) => {
-    const { selectionType = 'checkbox' } = props;
-    
+  const { selectionType = 'checkbox', data = [], columns = [], handleDeleteManyProducts ,handleDeleteMany, pageType, deletedSuccessfully  } = props;
+  const [rowSelectedKeys, setRowSelectedKeys] = useState([]);
 
-    const columns = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            render: (text) => <a>{text}</a>,
-        },
-        {
-            title: 'Age',
-            dataIndex: 'age',
-        },
-        {
-            title: 'Address',
-            dataIndex: 'address',
-        },
-    ];
+  // Row selection configuration
+  const rowSelection = {
+    onChange: (selectedRowKeys) => {
+      setRowSelectedKeys(selectedRowKeys); // Cập nhật key đã chọn
+    },
+  };
 
-    const data = [
-        {
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 47,
-            address: 'London No. 1 Park Lane',
-        },
-    ];
-
-    const rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        },
-        getCheckboxProps: (record) => ({
-            disabled: record.name === 'Disabled User', // Disable checkbox for specific rows
-        }),
-    };
-
-    return (
-        <div>
-            <Table
-                rowSelection={
-                    selectionType === 'checkbox' || selectionType === 'radio'
-                        ? { type: selectionType, ...rowSelection }
-                        : undefined
-                }
-                columns={columns}
-                dataSource={data}
-            />
+  const handleDeleteAll = () => {
+    if (rowSelectedKeys.length > 0) {
+      if (pageType === 'AdminProduct.jsx') {
+        handleDeleteManyProducts(rowSelectedKeys); // Xoá cho AdminProduct.jsx
+      } else if (pageType === 'AdminUser.jsx') {
+        handleDeleteMany(rowSelectedKeys); // Xoá cho AdminUser.jsx
+      }
+    }
+  };
+  return (
+    <>
+      {rowSelectedKeys.length >= 2 && !deletedSuccessfully && (
+        <div
+          style={{
+            background: '#1d1ddd',
+            color: '#fff',
+            fontWeight: 'bold',
+            padding: '10px',
+            cursor: 'pointer',
+          }}
+          onClick={handleDeleteAll}
+        >
+          Xóa tất cả
         </div>
-    );
+      )}
+
+      <Table
+        rowSelection={
+          selectionType === 'checkbox' || selectionType === 'radio'
+            ? { type: selectionType, ...rowSelection }
+            : undefined
+        }
+        columns={columns}
+        dataSource={data}
+        {...props}
+      />
+    </>
+  );
 };
 
 export default TableComponent;

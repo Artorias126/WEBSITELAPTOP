@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Col, Popover, Spin } from 'antd';  // Thêm import Spin
+import { Badge, Col, Popover, Spin } from 'antd'; 
 import { UserOutlined, CaretDownOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import {
   WrapperHeader,
@@ -13,65 +13,70 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import * as UserService from "../../services/UserService";
 import { resetUser } from '../../redux/slice/userSlide';
+import { searchProduct } from '../../redux/slice/productSlide';
 
-const HeaderComponent = ({isHiddenSearch = false,isHiddenCart =false}) => {
+const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  const dispatch = useDispatch(); // Lấy dữ liệu người dùng từ Redux store
-  const [Pending, setPending] = useState(false); // Sửa lại ở đây
-  console.log('user', user); // Kiểm tra dữ liệu người dùng
+  const dispatch = useDispatch();
+  const [Pending, setPending] = useState(false);
+  const [search,setSearch] = useState('');
 
-  // Điều hướng đến trang đăng nhập khi người dùng chưa đăng nhập
   const handleNavigateLogin = () => {
     navigate('sign-in');
   };
 
   const handleLogout = async () => {
-    setPending(true);  // Bật trạng thái đang xử lý
+    setPending(true);
     await UserService.logoutUser();
     dispatch(resetUser());
     navigate('/', { replace: true });
-    setPending(false);  // Tắt trạng thái khi hoàn thành
+    setPending(false);
   };
+  const onSearch = (e) =>{
+    setSearch(e.target.value)
+    dispatch(searchProduct(e.target.value))
+  }
 
   const content = (
     <div>
-      <WrapperContentPopup onClick={() => navigate('/profile-user')} >Thông tin người dùng</WrapperContentPopup>
+      <WrapperContentPopup onClick={() => navigate('/profile-user')}>Thông tin người dùng</WrapperContentPopup>
       {user?.isAdmin && (
-        <WrapperContentPopup onClick={() => navigate('/system/admin')} >Quản lí hệ thống</WrapperContentPopup>
+        <WrapperContentPopup onClick={() => navigate('/system/admin')}>Quản lí hệ thống</WrapperContentPopup>
       )}
       <WrapperContentPopup onClick={handleLogout}>Đăng xuất</WrapperContentPopup>
     </div>
   );
 
   return (
-    <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenSearch ? 'space-between' : 'unset' }}>
+    <WrapperHeader>
       {/* Logo Section */}
-      <Col span={5} style={{ textAlign: 'left' }}>
-        <WrapperTextHeader>DUYLAPTOP</WrapperTextHeader>
+      <Col span={4} style={{ textAlign: 'left' }}>
+        <WrapperTextHeader onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+          DUYLAPTOP
+        </WrapperTextHeader>
       </Col>
 
       {/* Search Bar Section */}
       {!isHiddenSearch && (
-        <Col span={13} style={{ padding: '0 16px' }}>
-        <ButtonInputSearch
-          size="large"
-          textButton="Tìm kiếm"
-          placeholder="Nhập nội dung tìm kiếm"
-        />
-      </Col>
+        <Col span={14} style={{ padding: '0 16px' }}>
+          <ButtonInputSearch
+            size="large"
+            textButton="Tìm kiếm"
+            placeholder="Nhập nội dung tìm kiếm"
+            onChange = {onSearch}
+          />
+        </Col>
       )}
-      
+
       {/* Account and Cart Section */}
-      <Col span={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '16px' }}>
+      <Col span={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '16px' }}>
         <WrapperHeaderAccount>
           <UserOutlined style={{ fontSize: '30px' }} />
           {user?.access_token ? (
-            <>
-              <Popover content={content} trigger="click">
-                 <div style={{ cursor: 'pointer' }}>{user?.name?.length ? user?.name : user?.email}</div>
-              </Popover>
-            </>
+            <Popover content={content} trigger="click">
+              <div style={{ cursor: 'pointer' }}>{user?.name || user?.email}</div>
+            </Popover>
           ) : (
             <div onClick={handleNavigateLogin} style={{ cursor: 'pointer' }}>
               <WrapperTextHeaderSmall>Đăng nhập/Đăng ký</WrapperTextHeaderSmall>
@@ -83,19 +88,15 @@ const HeaderComponent = ({isHiddenSearch = false,isHiddenCart =false}) => {
           )}
         </WrapperHeaderAccount>
 
-        {/* Loading chỉ áp dụng cho phần logout */}
-        {Pending && (
-          <Spin />
-        )}
+        {Pending && <Spin />}
 
-        {/* Cart Section */}
         {!isHiddenCart && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Badge count={4} size="small">
-            <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
-          </Badge>
-          <WrapperTextHeaderSmall>Giỏ hàng</WrapperTextHeaderSmall>
-        </div>
+            <Badge count={4} size="small">
+              <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
+            </Badge>
+            <WrapperTextHeaderSmall>Giỏ hàng</WrapperTextHeaderSmall>
+          </div>
         )}
       </Col>
     </WrapperHeader>

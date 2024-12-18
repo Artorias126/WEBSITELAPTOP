@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Menu } from 'antd';
 import { UserOutlined, AppstoreOutlined } from '@ant-design/icons';
-import { getItem } from '../../utils';
 import HeaderComponent from '../../components/HeaderComponent/HeaderComponent';
 import AdminProduct from '../../components/AdminProduct/AdminProduct';
 import AdminUser from '../../components/AdminUser/AdminUser';
@@ -46,8 +45,7 @@ const AdminPage = () => {
                   mode="inline"
                   style={{
                       width: 256,
-                      boxShadow: '1px 1px 2px #ccc',
-                      height: '100vh',
+                      boxShadow: '1px 1px 2px #ccc'
                   }}
                   items={items}
                   onClick={handleOnClick}
