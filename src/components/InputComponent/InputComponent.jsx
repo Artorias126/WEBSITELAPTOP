@@ -1,14 +1,24 @@
-import { Input } from 'antd';
 import React from 'react';
+import { Input } from 'antd';
 
-const InputComponent = ({ size, placeholder, bordered, style, ...rests }) => {
-  return (
+const { TextArea } = Input;
+
+const InputComponent = ({ size, placeholder, bordered, style, isTextArea, ...rests }) => {
+  return isTextArea ? (
+    <TextArea
+      size={size}
+      placeholder={placeholder}
+      bordered={bordered}
+      style={style}
+      {...rests} // Chuyển tất cả các props còn lại vào TextArea
+    />
+  ) : (
     <Input
       size={size}
       placeholder={placeholder}
       bordered={bordered}
       style={style}
-      {...rests}
+      {...rests} // Chuyển tất cả các props còn lại vào Input
     />
   );
 };

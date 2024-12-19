@@ -99,7 +99,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
         </div>
 
         <WrapperPriceProduct>
-          <WrapperPriceTextProduct>{productDetails?.price}</WrapperPriceTextProduct>
+          <WrapperPriceTextProduct>{productDetails?.price.toLocaleString()}đ</WrapperPriceTextProduct>
         </WrapperPriceProduct>
 
         <WrapperAddressProduct>
@@ -110,10 +110,11 @@ const ProductDetailsComponent = ({ idProduct }) => {
 
         {/* Phần mô tả sản phẩm */}
         <WrapperStyleDescriptionProduct>
-          <h3>Mô tả sản phẩm</h3>
-          <ul></ul>
-        </WrapperStyleDescriptionProduct>
-
+        <h3>Mô tả sản phẩm</h3>
+        <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: '18px' }}>
+          {productDetails?.description}
+        </pre>
+      </WrapperStyleDescriptionProduct>
         <div
           style={{
             margin: '10px 0 20px',

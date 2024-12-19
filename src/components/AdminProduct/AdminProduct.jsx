@@ -499,11 +499,21 @@ const AdminProduct = () => {
           <Form.Item
             label="Mô tả"
             name="description"
-            rules={[{ required: true, message: 'Please input your description!' }]} >
+            rules={[{ required: true, message: 'Please input your description!' }]}>
             <InputComponent
+              isTextArea={true}
               value={stateProduct.description}
               onChange={handleOnChange}
               name="description"
+              autoSize={{ minRows: 4, maxRows: 10 }} // Nếu bạn muốn tự động thay đổi chiều cao
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.shiftKey) {
+                  // Giữ nguyên hành động xuống dòng
+                } else if (e.key === 'Enter') {
+                  // Ngăn chặn hành động Enter mặc định (submit form)
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Item>
           <Form.Item
@@ -601,11 +611,21 @@ const AdminProduct = () => {
           <Form.Item
             label="Mô tả"
             name="description"
-            rules={[{ required: true, message: 'Please input your description!' }]} >
+            rules={[{ required: true, message: 'Please input your description!' }]}>
             <InputComponent
+              isTextArea={true}
               value={stateProductDetails.description}
               onChange={handleOnChangeDetails}
               name="description"
+              autoSize={{ minRows: 4, maxRows: 10 }} // Nếu bạn muốn tự động thay đổi chiều cao
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.shiftKey) {
+                  // Giữ nguyên hành động xuống dòng
+                } else if (e.key === 'Enter') {
+                  // Ngăn chặn hành động Enter mặc định (submit form)
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Item>
           <Form.Item
