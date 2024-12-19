@@ -114,9 +114,10 @@ const AdminUser = () => {
     setSearchedColumn(dataIndex);
   };
 
-  const handleReset = (clearFilters) => {
+  const handleReset = (clearFilters, confirm) => {
     clearFilters();
     setSearchText('');
+    confirm();
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -151,7 +152,7 @@ const AdminUser = () => {
             Search
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
@@ -217,10 +218,16 @@ const AdminUser = () => {
   ];
 
   const dataTable =
-    users?.data?.length &&
-    users?.data?.map((user) => {
-      return { ...user, key: user._id, isAdmin: user.isAdmin ? 'True' : 'False' };
-    });
+  Array.isArray(users?.data) &&
+  users?.data?.map((user) => ({
+    ...user,
+    key: user._id,
+    isAdmin: user.isAdmin ? 'True' : 'False',
+    name: user.name || '', // Đảm bảo có giá trị mặc định
+    email: user.email || '',
+    phone: user.phone || '',
+    address: user.address || '',
+  }));
 
   const queryClient = useQueryClient(); // Initialize queryClient
 
