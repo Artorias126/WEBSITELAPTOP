@@ -1,15 +1,17 @@
 import axios from "axios";
 import { axiosJWT } from "./UserService";
 
-export const getAllProduct = async (search) => {
+export const getAllProduct = async (search, limit) => {
   let res = {};
-  const baseUrl = `${process.env.REACT_APP_API_URL}/product/get-all`;
 
   if (search?.length > 0) {
-      const encodedSearch = encodeURIComponent(search); // Encode để đảm bảo an toàn ký tự đặc biệt
-      res = await axios.get(`${baseUrl}?filter=name&filter=${encodedSearch}`);
+    res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/product/get-all?filter=name&filter=${search}&limit=${limit}`
+    );
   } else {
-      res = await axios.get(baseUrl);
+    res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/product/get-all?limit=${limit}`
+    );
   }
 
   return res.data;
