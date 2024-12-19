@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import * as UserService from "../../services/UserService";
 import { resetUser } from '../../redux/slice/userSlide';
-import { searchProduct } from '../../redux/slice/productSlide';
+import { searchProduct } from '../../redux/slice/productSlide1';
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   const navigate = useNavigate();

@@ -1,38 +1,59 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TypeProduct from '../../components/TypeProduct/TypeProduct';
-import { WrapperTypeProduct, WrapperButtonMore, WrapperProducts } from './style'; // Đảm bảo đường dẫn đúng
+import { WrapperTypeProduct, WrapperButtonMore, WrapperProducts } from './style';
 import SliderComponent from '../../components/SliderComponent/SliderComponent';
 import slider1 from '../../assets/images/slider1.png';
 import slider2 from '../../assets/images/slider2.png';
 import slider3 from '../../assets/images/slider3.png';
 import CardComponent from '../../components/CardComponent/CardComponent';
-import * as ProductService from '../../services/ProductService'
+import * as ProductService from '../../services/ProductService';
 import { useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
+import { useDebounce } from '../../hooks/useDebounce';
+import styled from 'styled-components';
+
+// Styled components cho Spinner
+const Spinner = styled.div`
+  border: 4px solid #f3f3f3; /* Màu nền */
+  border-top: 4px solid #3498db; /* Màu spinner */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
 
 const HomePage = () => {
-  const product = useSelector((state) => state.product) 
+  const searchProduct = useSelector((state) => state?.product?.search);
+  const searchDebounce = useDebounce(searchProduct);
+  const refSearch = useRef();
+  const [stateProducts, setStateProducts] = useState([]);
   const arr = ['ASUS', 'LENOVO', 'DELL'];
 
-  const fetchProductAll = async () => {
-    try {
-        const res = await ProductService.getAllProduct();
-        console.log('res', res);
-        return res;
-    } catch (error) {
-        console.error('Error fetching products:', error);
-        throw error;
+  const fetchProductAll = async (search) => {
+    const res = await ProductService.getAllProduct(search);
+    if (res?.data) {
+      return res?.data; // Trả về data để sử dụng trong useQuery
     }
-};
+    return [];
+  };
 
-const { isLoading, data: products } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProductAll,
+  const { isLoading, data: products } = useQuery({
+    queryKey: ['products', searchDebounce],
+    queryFn: () => fetchProductAll(searchDebounce),
     retry: 3,
     retryDelay: 1000,
-});
+  });
 
-console.log('data', product);
+  useEffect(() => {
+    if (products) {
+      setStateProducts(products);
+    }
+  }, [products]);
 
   return (
     <>
@@ -52,8 +73,13 @@ console.log('data', product);
 
         {/* Sản phẩm */}
         <WrapperProducts>
-          {products?.data?.map((product) => (
-            <CardComponent
+          {isLoading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
+              <Spinner /> {/* Hiển thị spinner khi đang tải */}
+            </div>
+          ) : stateProducts?.length > 0 ? (
+            stateProducts.map((product) => (
+              <CardComponent
                 key={product._id}
                 countInStock={product.countInStock}
                 description={product.description}
@@ -63,7 +89,10 @@ console.log('data', product);
                 rating={product.rating}
                 type={product.type}
               />
-            ))}
+            ))
+          ) : (
+            <div>Không tìm thấy sản phẩm nào phù hợp.</div>
+          )}
         </WrapperProducts>
 
         {/* Nút "Xem thêm" */}

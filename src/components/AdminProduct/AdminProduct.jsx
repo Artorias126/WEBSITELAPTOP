@@ -2,7 +2,7 @@ import { getBase64 } from '../../utils';
 import * as ProductService from '../../services/ProductService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Form, Upload,Space } from 'antd';
+import { Button, Form, Upload,Space,Spin } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
 import * as message from '../../components/Message/Message';
 import TableComponent from '../../components/TableComponent/TableComponent';
@@ -434,6 +434,7 @@ const AdminProduct = () => {
         </Button>
       </div>
       <div style={{ marginTop: '20px' }}>
+        
         <TableComponent
           deletedSuccessfully={deletedSuccessfully}
           handleDeleteManyProducts = {handleDeleteManyProducts}
