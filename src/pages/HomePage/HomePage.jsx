@@ -31,36 +31,48 @@ const HomePage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
   const searchDebounce = useDebounce(searchProduct);
   const refSearch = useRef();
-  const [stateProducts, setStateProducts] = useState([]);
-  const arr = ['ASUS', 'LENOVO', 'DELL'];
+  const [limit, setLimit] = useState(6);
+  const [typeProducts,setTypeProducts] = useState([]);
 
-  const fetchProductAll = async (search) => {
-    const res = await ProductService.getAllProduct(search);
-    if (res?.data) {
-      return res?.data; // Trả về data để sử dụng trong useQuery
-    }
-    return [];
+  const fetchProductAll = async ({ queryKey }) => {
+    const [_limit, search] = queryKey;
+    console.log('context', { limit, search });
+
+    const res = await ProductService.getAllProduct(search, limit);
+    return res;
   };
 
-  const { isLoading, data: products } = useQuery({
-    queryKey: ['products', searchDebounce],
-    queryFn: () => fetchProductAll(searchDebounce),
+  const fetchAllTypeProduct = async () => {
+    const res = await ProductService.getAllTypeProduct();
+    if (res?.status === 'OK') {
+      setTypeProducts(res?.data);
+    }
+  };
+  
+  useEffect(() => {
+    fetchAllTypeProduct()
+  },[]);
+
+  const {
+    isLoading,
+    data: products,
+    isPreviousData,
+  } = useQuery({
+    queryKey: ['products', limit, searchDebounce],
+    queryFn: fetchProductAll,
     retry: 3,
     retryDelay: 1000,
+    keepPreviousData: true,
   });
 
-  useEffect(() => {
-    if (products) {
-      setStateProducts(products);
-    }
-  }, [products]);
+  console.log('isPreviousData', isPreviousData);
 
   return (
     <>
       {/* Phần loại sản phẩm */}
       <div style={{ padding: '0 120px' }}>
         <WrapperTypeProduct>
-          {arr.map((item) => (
+          {typeProducts.map((item) => (
             <TypeProduct name={item} key={item} />
           ))}
         </WrapperTypeProduct>
@@ -77,8 +89,8 @@ const HomePage = () => {
             <div style={{ display: 'flex', justifyContent: 'center', padding: '50px 0' }}>
               <Spinner /> {/* Hiển thị spinner khi đang tải */}
             </div>
-          ) : stateProducts?.length > 0 ? (
-            stateProducts.map((product) => (
+          ) : products?.data?.length > 0 ? (
+            products.data.map((product) => (
               <CardComponent
                 key={product._id}
                 countInStock={product.countInStock}
@@ -88,6 +100,7 @@ const HomePage = () => {
                 price={product.price}
                 rating={product.rating}
                 type={product.type}
+                id={product._id}
               />
             ))
           ) : (
@@ -96,18 +109,35 @@ const HomePage = () => {
         </WrapperProducts>
 
         {/* Nút "Xem thêm" */}
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '10px',
+          }}
+        >
           <WrapperButtonMore
-            textButton="Xem thêm"
+            textButton={isPreviousData ? 'Load more' : 'Xem thêm'}
             type="outline"
             styleButton={{
               border: '1px solid rgb(11, 116, 229)',
-              color: 'rgb(11, 116, 229)',
+              color: `${
+                products?.total === products?.data?.length ? '#ccc' : 'rgb(11, 116, 229)'
+              }`,
               width: '240px',
               height: '38px',
               borderRadius: '4px',
             }}
-            styleTextButton={{ fontWeight: 500 }}
+            disabled={
+              products?.total === products?.data?.length ||
+              products?.totalPage === 1
+            }
+            styleTextButton={{
+              fontWeight: 500,
+              color: products?.total === products?.data?.length && '#fff',
+            }}
+            onClick={() => setLimit((prev) => prev + 6)}
           />
         </div>
       </div>

@@ -91,7 +91,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         {Pending && <Spin />}
 
         {!isHiddenCart && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div onClick={() => navigate ('/order')} style={{ display: 'flex', alignItems: 'center', gap: '8px',cursor:'pointer'}}>
             <Badge count={4} size="small">
               <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
             </Badge>

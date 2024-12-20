@@ -1,8 +1,8 @@
-import { getBase64 } from '../../utils';
+import { getBase64, renderOptions } from '../../utils';
 import * as ProductService from '../../services/ProductService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Form, Upload,Space,Spin } from 'antd';
+import { Button, Form, Upload,Space,Spin, Select } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
 import * as message from '../../components/Message/Message';
 import TableComponent from '../../components/TableComponent/TableComponent';
@@ -21,6 +21,7 @@ const AdminProduct = () => {
   const user = useSelector((state) => state?.user);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [typeSelect, setTypeSelect] = useState ('')
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
@@ -31,7 +32,8 @@ const AdminProduct = () => {
     rating: '',
     image: '',
     type: '',
-    countInStock: ''
+    countInStock: '',
+    newType: '',
   });
 
   const [stateProductDetails, setStateProductDetails] = useState({
@@ -85,6 +87,7 @@ const AdminProduct = () => {
     queryKey: ['products'],
     queryFn: getAllProducts,
   });
+  
 
   const fetchGetDetailsProduct = async (rowSelected) => {
     if (!rowSelected) {
@@ -204,11 +207,24 @@ const AdminProduct = () => {
     },
   });
 
+  const fetchAllTypeProduct = async () => {
+    const res = await ProductService.getAllTypeProduct();
+    return res;
+  };
+  
+
   const { data, isLoading, isSuccess, isError } = mutation;
   const { data: dataUpdated, isSuccess: isSuccessUpdated, isError: isErrorUpdated } = mutationUpdate;
   const { data: dataDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted } = mutationDeleted;
   const {data: dataDeletedMany,isSuccess: isSuccessDeletedMany,isError: isErrorDeletedMany,} = mutationDeletedMany;
   const [deletedSuccessfully, setDeletedSuccessfully] = useState(false);
+
+  const typeProduct = useQuery({
+    queryKey: ['type-product'],
+    queryFn: fetchAllTypeProduct,
+  });
+
+  console.log('type', typeProduct)
 
   const columns = [
     {
@@ -366,7 +382,21 @@ const AdminProduct = () => {
   };
 
   const onFinish = () => {
-    mutation.mutate(stateProduct);
+    const params = {
+      name: stateProduct.name,
+      price: stateProduct.price,
+      description: stateProduct.description,
+      rating: stateProduct.rating,
+      image: stateProduct.image,
+      type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
+      countInStock: stateProduct.countInStock,
+    };
+  
+    mutation.mutate(params, {
+      onSettled: () => {
+        queryClient.invalidateQueries(['products']);
+      },
+    });
   };
 
   useEffect(() => {
@@ -409,6 +439,21 @@ const AdminProduct = () => {
       countInStock: ''
     });
     form.resetFields();
+  };
+
+  const handleChangeSelect = (value) => {
+    if (value !== 'add_type') {
+      setStateProduct({
+        ...stateProduct,
+        type: value,
+      });
+    } else {
+      setStateProduct({
+        ...stateProduct,
+        type: value,
+      });
+      setTypeSelect(value); // Không cần thiết nếu không sử dụng state này
+    }
   };
 
   const onUpdateProduct = () => {
@@ -479,15 +524,30 @@ const AdminProduct = () => {
             />
           </Form.Item>
           <Form.Item
-            label="Loại sản phẩm"
+            label="Type"
             name="type"
-            rules={[{ required: true, message: 'Please input your type!' }]} >
-            <InputComponent
-              value={stateProduct.type}
-              onChange={handleOnChange}
+            rules={[{ required: true, message: 'Please input your type!' }]}
+          >
+            <Select
               name="type"
+              value={stateProduct.type}
+              onChange={handleChangeSelect}
+              options={renderOptions(typeProduct?.data?.data)} // Sửa cú pháp options
             />
           </Form.Item>
+          {stateProduct.type === 'add_type' && ( 
+            <Form.Item
+              label="New type"
+              name="newType"
+              rules={[{ required: true, message: 'Please input your new type!' }]}
+            >
+              <InputComponent
+                value={stateProduct.newType}
+                onChange={handleOnChange}
+                name="newType"
+              />
+            </Form.Item>
+          )}
           <Form.Item
             label="Giá"
             name="price"
@@ -501,11 +561,21 @@ const AdminProduct = () => {
           <Form.Item
             label="Mô tả"
             name="description"
-            rules={[{ required: true, message: 'Please input your description!' }]} >
+            rules={[{ required: true, message: 'Please input your description!' }]}>
             <InputComponent
+              isTextArea={true}
               value={stateProduct.description}
               onChange={handleOnChange}
               name="description"
+              autoSize={{ minRows: 4, maxRows: 10 }} // Nếu bạn muốn tự động thay đổi chiều cao
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.shiftKey) {
+                  // Giữ nguyên hành động xuống dòng
+                } else if (e.key === 'Enter') {
+                  // Ngăn chặn hành động Enter mặc định (submit form)
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Item>
           <Form.Item
@@ -603,11 +673,21 @@ const AdminProduct = () => {
           <Form.Item
             label="Mô tả"
             name="description"
-            rules={[{ required: true, message: 'Please input your description!' }]} >
+            rules={[{ required: true, message: 'Please input your description!' }]}>
             <InputComponent
+              isTextArea={true}
               value={stateProductDetails.description}
               onChange={handleOnChangeDetails}
               name="description"
+              autoSize={{ minRows: 4, maxRows: 10 }} // Nếu bạn muốn tự động thay đổi chiều cao
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.shiftKey) {
+                  // Giữ nguyên hành động xuống dòng
+                } else if (e.key === 'Enter') {
+                  // Ngăn chặn hành động Enter mặc định (submit form)
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Item>
           <Form.Item
