@@ -32,15 +32,26 @@ const HomePage = () => {
   const searchDebounce = useDebounce(searchProduct);
   const refSearch = useRef();
   const [limit, setLimit] = useState(6);
-  const arr = ['ASUS', 'LENOVO', 'DELL'];
+  const [typeProducts,setTypeProducts] = useState([]);
 
   const fetchProductAll = async ({ queryKey }) => {
-    const [_, limit, search] = queryKey;
+    const [_limit, search] = queryKey;
     console.log('context', { limit, search });
 
     const res = await ProductService.getAllProduct(search, limit);
     return res;
   };
+
+  const fetchAllTypeProduct = async () => {
+    const res = await ProductService.getAllTypeProduct();
+    if (res?.status === 'OK') {
+      setTypeProducts(res?.data);
+    }
+  };
+  
+  useEffect(() => {
+    fetchAllTypeProduct()
+  },[]);
 
   const {
     isLoading,
@@ -61,7 +72,7 @@ const HomePage = () => {
       {/* Phần loại sản phẩm */}
       <div style={{ padding: '0 120px' }}>
         <WrapperTypeProduct>
-          {arr.map((item) => (
+          {typeProducts.map((item) => (
             <TypeProduct name={item} key={item} />
           ))}
         </WrapperTypeProduct>
