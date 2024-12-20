@@ -1,13 +1,39 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from './slice/counterSlice'; // Đảm bảo đường dẫn đúng
-import useReducer  from './slice/userSlide';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import userReducer  from './slice/userSlide';
 import productReducer from './slice/productSlide1'; 
-const store = configureStore({
-  reducer: {
-    user: useReducer,
-    counter: counterReducer, // Kết hợp reducer cho counter
-    product: productReducer
-  },
+import orderReducer from './slice/orderslide';
+import {
+  persistStore,
+  persistReducer,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+
+const persistConfig = {
+  key: 'root',
+  version: 1,
+  storage,
+  blacklist: ['product','user']
+};
+
+const rootReducer = combineReducers({
+  product: productReducer,
+  user: userReducer,
+  order: orderReducer,
 });
 
-export default store;  // Export mặc định
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Có thể cấu hình thêm nếu cần
+      },
+    }),
+  // Thêm các actions cần bỏ qua khi persist
+  ignoredActions: ['FLUSH', 'REHYDRATE', 'PAUSE', 'PERSIST', 'PURGE', 'REGISTER'],
+});
+
+export let persistor = persistStore(store);

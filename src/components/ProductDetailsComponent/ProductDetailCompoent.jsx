@@ -11,10 +11,16 @@ import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { addOrderProduct } from '../../redux/slice/orderslide';
 
 const ProductDetailsComponent = ({ idProduct }) => {
   const [numProduct, setNumProduct] = useState(1);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
   const user = useSelector((state) => state.user);
 
   const onChange = (value) => {
@@ -36,8 +42,23 @@ const ProductDetailsComponent = ({ idProduct }) => {
       setNumProduct(numProduct > 1 ? numProduct - 1 : 1); // Giảm số lượng nhưng không được nhỏ hơn 1
     }
   };
-
-
+  
+const handleAddOrderProduct = () => {
+  if (!user?.id) {
+    navigate('/sign-in', { state: location?.pathname });
+  } else {
+    dispatch(addOrderProduct({
+      orderItem: {
+        name: productDetails?.name,
+        amount: numProduct,
+        image: productDetails?.image,
+        price: productDetails?.price,
+        product: productDetails?._id,
+      }
+    }));
+  }
+  console.log('productDetails', productDetails, user);
+};
 
   const renderStars = (num) => {
     const stars = [];
@@ -154,7 +175,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
           </WrapperQualityProduct>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
+          <ButtonComponent
             style={{
               background: 'rgb(255, 57, 69)',
               height: '48px',
@@ -164,10 +185,13 @@ const ProductDetailsComponent = ({ idProduct }) => {
               color: '#fff',
               fontSize: '15px',
               fontWeight: '700',
+              cursor: 'pointer' 
             }}
+            onClick = {handleAddOrderProduct}
+            textButton={"Mua Ngay"}
           >
-            Chọn mua
-          </button>
+            
+          </ButtonComponent>
         </div>
       </Col>
     </Row>

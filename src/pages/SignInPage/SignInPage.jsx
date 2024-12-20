@@ -4,13 +4,14 @@ import InputForm from "../../components/InputForm/InputForm";
 import imageLogo from "../../assets/images/logo.png";
 import { WrapperContainerLeft, WrapperTextLight, WrapperContainerRight } from "./style";
 import { EyeInvisibleFilled, EyeFilled } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as UserService from "../../services/UserService";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../../components/LoadingComponent/Loading";
 import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slice/userSlide";
+
 
 
 const SignInPage = () => {
@@ -21,6 +22,9 @@ const SignInPage = () => {
 
   useEffect(() => {
     if (isSuccess && data?.status !== 'ERR') {
+      if (location?.state) {
+        navigate(location?.state);
+      }
       navigate('/');
       localStorage.setItem('access_token', JSON.stringify(data?.access_token));
   
@@ -50,6 +54,7 @@ const SignInPage = () => {
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleSignIn = () => {
     mutation.mutate({
