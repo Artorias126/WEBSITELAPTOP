@@ -22,7 +22,7 @@ const SliderComponent = ({ arrImages }) => {
             alt={`slider-${index}`}
             preview={false}
             width="100%"
-            height="500px"
+            height="350px"
             style={{ objectFit: "cover" }} // Đảm bảo ảnh vừa khung
           />
       ))}
