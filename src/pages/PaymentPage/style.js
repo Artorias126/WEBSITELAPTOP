@@ -1,4 +1,4 @@
-import { Radio } from "antd";
+import { Radio, InputNumber } from "antd";
 import styled from "styled-components";
 
 
@@ -73,4 +73,10 @@ export const WrapperRight = styled.div`
   flex-direction: column;
   gap: 10px;
   align-items: flex-start;
+`;
+export const WrapperInputNumber = styled(InputNumber)`
+  &.ant-input-number.ant-input-number-sm {
+    width: 40px;
+    text-align: center;
+  }
 `;

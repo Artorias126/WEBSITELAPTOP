@@ -96,7 +96,7 @@ const PaymentPage = () => {
           }
         });
       } else {
-        message.error(`Đặt hàng thất bại: ${data?.message || 'Lý do không rõ'}`);
+        message.error(`Đặt hàng thất bại: ${data?.message}`);
       }
     }
   }, [isSuccess, data]);

@@ -11,30 +11,31 @@ import AdminPage from "../pages/AdminPage/AdminPage"
 import PaymentPage from "../pages/PaymentPage/PaymentPage";
 import OrderSuccess from "../pages/OrderSuccess/OrderSuccess";
 
+
 export const routes = [
     {
         path: '/',
-        page:HomePage,
+        page: HomePage,
         isShowHeader: true
     },
     {
         path: '/order',
-        page:OrderPage,
+        page: OrderPage,
         isShowHeader: true
     },
     {
         path: '/payment',
-        page:PaymentPage,
+        page: PaymentPage,
         isShowHeader: true
     },
     {
         path: '/orderSuccess',
-        page:OrderSuccess,
+        page: OrderSuccess,
         isShowHeader: true
     },
     {
         path: '/product',
-        page:ProductPage,
+        page: ProductPage,
         isShowHeader: true
     },
     {
@@ -54,12 +55,12 @@ export const routes = [
     },
     {
         path: '/product/:type',
-        page:TypeProductPage,
+        page: TypeProductPage,
         isShowHeader: true
     },
     {
         path: '/Profile-user',
-        page:ProfilePage,
+        page: ProfilePage,
         isShowHeader: true
     },
     {
@@ -67,10 +68,10 @@ export const routes = [
         page: AdminPage,
         isShowHeader: false,
         isPrivate: true, // Đánh dấu là route yêu cầu quyền truy cập
-      },
+    },
     {
         path: '*',
-        page:NotFoundPage
+        page: NotFoundPage
     }
-    
+
 ]

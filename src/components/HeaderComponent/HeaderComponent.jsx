@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Col, Popover, Spin } from 'antd'; 
+import { Badge, Col, Popover, Spin } from 'antd';
 import { UserOutlined, CaretDownOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import {
   WrapperHeader,
@@ -21,7 +21,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   const dispatch = useDispatch();
   const [Pending, setPending] = useState(false);
   const order = useSelector((state) => state.order)
-  const [search,setSearch] = useState('');
+  const [search, setSearch] = useState('');
 
   const handleNavigateLogin = () => {
     navigate('sign-in');
@@ -34,7 +34,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     navigate('/', { replace: true });
     setPending(false);
   };
-  const onSearch = (e) =>{
+  const onSearch = (e) => {
     setSearch(e.target.value)
     dispatch(searchProduct(e.target.value))
   }
@@ -65,7 +65,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
             size="large"
             textButton="Tìm kiếm"
             placeholder="Nhập nội dung tìm kiếm"
-            onChange = {onSearch}
+            onChange={onSearch}
           />
         </Col>
       )}
@@ -92,7 +92,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         {Pending && <Spin />}
 
         {!isHiddenCart && (
-          <div onClick={() => navigate ('/order')} style={{ display: 'flex', alignItems: 'center', gap: '8px',cursor:'pointer'}}>
+          <div onClick={() => navigate('/order')} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
             <Badge count={order?.orderItems?.length} size="small">
               <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
             </Badge>

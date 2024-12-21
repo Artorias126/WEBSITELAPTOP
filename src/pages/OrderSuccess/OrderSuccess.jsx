@@ -28,14 +28,14 @@ const OrderSuccess = () => {
             <WrapperInfo>
               <div>
                 <Lable>Phương thức giao hàng</Lable>
-                <WrapperValue style={{ color: '#ea8500', fontWeight: 'bold' }}>{orderContant.delivery[state?.delivery]}</WrapperValue >
+                <WrapperValue style={{ color: '#ea8500', fontWeight: 'bold', fontSize: '20px' }}>{orderContant.delivery[state?.delivery]}</WrapperValue >
               </div>
             </WrapperInfo>
 
             <WrapperInfo>
               <div>
                 <Lable>Phương thức thanh toán</Lable>
-                <WrapperValue >{orderContant.payment[state?.payment]}</WrapperValue >
+                <WrapperValue style={{ color: 'blue', fontWeight: 'bold', fontSize: '20px' }} >{orderContant.payment[state?.payment]}</WrapperValue >
               </div>
             </WrapperInfo>
             <WrapperInfo>

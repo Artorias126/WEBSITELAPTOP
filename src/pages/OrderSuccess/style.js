@@ -60,7 +60,7 @@ export const WrapperCountOrder = styled.div`
 `;
 
 export const Lable = styled.span`
-  font-size: 12px;
+  font-size: 20px;
   color: #000;
   font-weight: bold;
 `;
