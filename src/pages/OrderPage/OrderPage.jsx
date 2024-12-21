@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Checkbox } from 'antd';
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { WrapperCountOrder, WrapperInfo, WrapperItemOrder, WrapperLeft, WrapperListOrder, WrapperStyleHeader, WrapperPriceDiscount, WrapperTotal, WrapperRight } from './style';
@@ -6,9 +6,11 @@ import { WrapperInputNumber } from '../../components/ProductDetailsComponent/sty
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { decreaseAmount, increaseAmount, removeAllOrderProduct, removeOrderProduct } from '../../redux/slice/orderslide';
+import { convertPrice } from '../../utils';
 
 const OrderPage = ({ count = 1 }) => {
   const order = useSelector((state) => state.order);
+  const user = useSelector((state) => state.user);
   const [listChecked, setListChecked] = useState([]);
   const dispatch = useDispatch();
 
@@ -33,6 +35,28 @@ const OrderPage = ({ count = 1 }) => {
     }
   };
 
+  const priceMemo = useMemo(() => {
+    const result = order?.orderItems?.reduce((total, cur) => {
+      return total + cur.price * cur.amount;
+    }, 0);
+    return result;
+  }, [order]);
+  
+  const deliveryPriceMemo = useMemo(() => {
+    if (priceMemo > 5000000) {
+      return 10000;
+    } else if (priceMemo === 0) {
+      return 0;
+    } else {
+      return 20000;
+    }
+  }, [priceMemo]);
+  
+  const totalPriceMemo = useMemo(() => {
+    return Number(priceMemo) + Number(deliveryPriceMemo);
+  }, [priceMemo, deliveryPriceMemo]);
+  
+
   const handleDeleteOrder = (idProduct) => {
     dispatch(removeOrderProduct({ idProduct }));
   };
@@ -51,6 +75,16 @@ const OrderPage = ({ count = 1 }) => {
       setListChecked([]);
     }
   };
+
+  const handleAddCard = () => {
+    console.log('user', user);
+    if (!user?.phone || !user?.address || !user?.name || !user?.city) {
+      // Xử lý logic khi thông tin người dùng không đầy đủ
+      return;
+    }
+    // Logic thêm giỏ hàng nếu thông tin người dùng đầy đủ
+  };
+  
 
   return (
     <div style={{ background: '#f5f5fa', width: '100%', height: '100vh', padding: '20px 0' }}>
@@ -87,7 +121,7 @@ const OrderPage = ({ count = 1 }) => {
                     </div>
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: '50px' }}>
                       <span>
-                        <span style={{ fontSize: '13px', color: '#242424' }}>{order?.price.toLocaleString()}đ</span>
+                        <span style={{ fontSize: '13px', color: '#242424' }}>{convertPrice(order?.price)}đ</span>
                       </span>
                       <WrapperCountOrder>
                         <button
@@ -105,7 +139,7 @@ const OrderPage = ({ count = 1 }) => {
                         </button>
                       </WrapperCountOrder>
                       <span style={{ color: 'rgb(255, 66, 78)', fontSize: '13px', fontWeight: 500 }}>
-                        {(order?.price * order?.amount).toLocaleString()}đ
+                        {convertPrice(order?.price * order?.amount)}
                       </span>
                       <DeleteOutlined style={{ cursor: 'pointer' }} onClick={() => handleDeleteOrder(order?.product)} />
                     </div>
@@ -120,32 +154,25 @@ const OrderPage = ({ count = 1 }) => {
               <WrapperInfo style={{ marginBottom: '15px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '14px' }}>
                   <span>Tạm tính</span>
-                  <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>250,000 VND</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '14px' }}>
-                  <span>Giảm giá</span>
-                  <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>-30,000 VND</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '14px' }}>
-                  <span>Thuế</span>
-                  <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>5,000 VND</span>
+                  <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>{convertPrice(priceMemo)}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '14px' }}>
                   <span>Phí giao hàng</span>
-                  <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>15,000 VND</span>
+                  <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>{convertPrice(deliveryPriceMemo)}</span>
                 </div>
               </WrapperInfo>
 
               <WrapperTotal style={{ fontSize: '16px' }}>
                 <span>Tổng tiền</span>
                 <span style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ color: 'rgb(254, 56, 52)', fontSize: '24px', fontWeight: 'bold' }}>240,000 VND</span>
+                  <span style={{ color: 'rgb(254, 56, 52)', fontSize: '24px', fontWeight: 'bold' }}>{convertPrice(totalPriceMemo)}</span>
                   <span style={{ color: '#999', fontSize: '11px' }}>Đã bao gồm thuế và phí giao hàng</span>
                 </span>
               </WrapperTotal>
             </div>
 
             <ButtonComponent
+              onClick = {() => handleAddCard()}
               styleButton={{
                 background: 'rgb(255, 57, 69)',
                 height: '48px',

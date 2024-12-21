@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleNameProduct, WrapperCardStyle, WrapperDiscountText, WrapperPriceText, WrapperReportText} from './style' 
 import { StarFilled } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { convertPrice } from '../../utils';
 
 const CardComponent = (props) => {
   const {
@@ -37,7 +38,7 @@ const CardComponent = (props) => {
     <span> | Còn hàng </span>
   </WrapperReportText>
   <WrapperPriceText>
-    <span style={{ marginRight: "8px" }}>{price?.toLocaleString()}đ</span>
+    <span style={{ marginRight: "8px" }}>{convertPrice(price)}đ</span>
   </WrapperPriceText>
 </WrapperCardStyle>
 

@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { addOrderProduct } from '../../redux/slice/orderslide';
+import { convertPrice } from '../../utils';
 
 const ProductDetailsComponent = ({ idProduct }) => {
   const [numProduct, setNumProduct] = useState(1);
@@ -71,7 +72,7 @@ const handleAddOrderProduct = () => {
   const { isLoading, data: productDetails } = useQuery({
     queryKey: ['product-details', idProduct],
     queryFn: fetchGetDetailsProduct,
-    enabled: !!idProduct, // Chỉ bật query khi idProduct tồn tại
+    enabled: !!idProduct, 
   });
 
   console.log('productDetails', productDetails);
@@ -120,7 +121,7 @@ const handleAddOrderProduct = () => {
         </div>
 
         <WrapperPriceProduct>
-          <WrapperPriceTextProduct>{productDetails?.price.toLocaleString()}đ</WrapperPriceTextProduct>
+          <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}đ</WrapperPriceTextProduct>
         </WrapperPriceProduct>
 
         <WrapperAddressProduct>
