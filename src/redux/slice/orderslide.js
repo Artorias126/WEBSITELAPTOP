@@ -61,12 +61,10 @@ export const orderSlide = createSlice({
       },
       selectedOrder: (state, action) => {
         const { listChecked } = action.payload;
-        const orderSelected = [];
-        state.orderItems.forEach((order) => {
-          if (listChecked.includes(order.product)) {
-            orderSelected.push(order);
-          }
-        });
+        const orderSelected = state.orderItems.filter((order) =>
+          listChecked.includes(order.product)
+        );
+        
         state.orderItemsSelected = orderSelected;
       },
     },

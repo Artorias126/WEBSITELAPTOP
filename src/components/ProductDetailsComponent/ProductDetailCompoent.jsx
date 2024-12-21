@@ -107,6 +107,7 @@ const handleAddOrderProduct = () => {
             </Col>
           ))}
         </Row>
+        
       </Col>
 
       <Col span={14} style={{ paddingLeft: '10px' }}>
