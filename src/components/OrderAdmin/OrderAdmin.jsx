@@ -14,6 +14,7 @@ const OrderAdmin = () => {
   // State lưu trữ dữ liệu đơn hàng
   const [ordersData, setOrdersData] = useState([]);
 
+  // Lấy dữ liệu từ API
   const getAllOrder = async () => {
     const res = await OrderService.getAllOrder(user?.access_token);
     return res;
@@ -26,12 +27,9 @@ const OrderAdmin = () => {
 
   const { isLoading: isLoadingOrders, data: orders } = queryOrder;
 
-  // Lấy dữ liệu từ localStorage khi load lại trang
+  // Xử lý dữ liệu đơn hàng sau khi lấy từ API
   useEffect(() => {
-    const savedOrders = localStorage.getItem('ordersData');
-    if (savedOrders) {
-      setOrdersData(JSON.parse(savedOrders));
-    } else if (orders?.data) {
+    if (orders?.data) {
       const formattedData = orders.data.map((order) => {
         const productName = order?.orderItems?.map(item => item.name).join(', ');
         return {
@@ -50,13 +48,6 @@ const OrderAdmin = () => {
     }
   }, [orders]);
 
-  // Lưu dữ liệu vào localStorage khi có sự thay đổi
-  useEffect(() => {
-    if (ordersData.length) {
-      localStorage.setItem('ordersData', JSON.stringify(ordersData));
-    }
-  }, [ordersData]);
-
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -72,6 +63,7 @@ const OrderAdmin = () => {
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
+            onClick={() => confirm()}
           >
             Search
           </Button>
@@ -87,7 +79,7 @@ const OrderAdmin = () => {
     ),
     filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
     onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
   });
 
   const columns = [
@@ -117,7 +109,7 @@ const OrderAdmin = () => {
       dataIndex: 'isDelivered',
       render: (text, record) => (
         <Select
-          value={text ? 'TRUE' : 'FALSE'}
+          value={text === 'TRUE' ? 'TRUE' : 'FALSE'}
           onChange={(value) => handleChangeDeliveryStatus(value === 'TRUE', record.key)}
           style={{ width: 100 }}
         >
@@ -126,8 +118,8 @@ const OrderAdmin = () => {
         </Select>
       ),
       filters: [
-        { text: 'Đã giao', value: true },
-        { text: 'Chưa giao', value: false },
+        { text: 'Đã giao', value: 'TRUE' },
+        { text: 'Chưa giao', value: 'FALSE' },
       ],
       onFilter: (value, record) => record.isDelivered === value,
     },
@@ -139,16 +131,16 @@ const OrderAdmin = () => {
     {
       title: 'Total Price',
       dataIndex: 'totalPrice',
-      sorter: (a, b) => a.totalPrice.length - b.paymentMethod.length,
+      sorter: (a, b) => a.totalPrice - b.totalPrice,
     },
   ];
 
   // Hàm thay đổi trạng thái "Delivery Status" trực tiếp trong local state
   const handleChangeDeliveryStatus = (isDelivered, orderId) => {
     const updatedOrders = ordersData.map((order) =>
-      order.key === orderId ? { ...order, isDelivered } : order
+      order.key === orderId ? { ...order, isDelivered: isDelivered ? 'TRUE' : 'FALSE' } : order
     );
-    setOrdersData(updatedOrders); // Cập nhật lại danh sách đơn hàng trong state
+    setOrdersData(updatedOrders);
   };
 
   return (
@@ -159,8 +151,8 @@ const OrderAdmin = () => {
           columns={columns}
           dataSource={ordersData}
           loading={isLoadingOrders}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: 'max-content' }}
+          pagination={false} // Hiển thị toàn bộ đơn hàng
+          scroll={{ x: 'max-content', y: 600 }} // Cuộn dọc nếu quá dài
         />
       </div>
     </div>
