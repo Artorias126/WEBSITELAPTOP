@@ -23,6 +23,7 @@ const OrderAdmin = () => {
   const queryOrder = useQuery({
     queryKey: ['orders'],
     queryFn: getAllOrder,
+    refetchInterval: 30000, // Tự động refetch mỗi 5 giây
   });
 
   const { isLoading: isLoadingOrders, data: orders } = queryOrder;
@@ -32,6 +33,8 @@ const OrderAdmin = () => {
     if (orders?.data) {
       const formattedData = orders.data.map((order) => {
         const productName = order?.orderItems?.map(item => item.name).join(', ');
+        const formattedTotalPrice = order.totalPrice?.toLocaleString('vi-VN');
+
         return {
           ...order,
           key: order._id,
@@ -42,6 +45,7 @@ const OrderAdmin = () => {
           isPaid: order?.isPaid ? 'TRUE' : 'FALSE',
           isDelivered: order?.isDelivered ? 'TRUE' : 'FALSE',
           productName,
+          totalPrice: formattedTotalPrice,
         };
       });
       setOrdersData(formattedData);
@@ -131,7 +135,7 @@ const OrderAdmin = () => {
     {
       title: 'Total Price',
       dataIndex: 'totalPrice',
-      sorter: (a, b) => a.totalPrice - b.totalPrice,
+      sorter: (a, b) => parseFloat(a.totalPrice.replace(/\./g, '')) - parseFloat(b.totalPrice.replace(/\./g, '')),
     },
   ];
 
