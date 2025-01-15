@@ -2,8 +2,8 @@ import { getBase64, renderOptions } from '../../utils';
 import * as ProductService from '../../services/ProductService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Form, Upload,Space,Spin, Select } from 'antd';
-import { PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
+import { Button, Form, Upload, Space, Spin, Select } from 'antd';
+import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import * as message from '../../components/Message/Message';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import InputComponent from '../InputComponent/InputComponent';
@@ -21,7 +21,7 @@ const AdminProduct = () => {
   const user = useSelector((state) => state?.user);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [typeSelect, setTypeSelect] = useState ('')
+  const [typeSelect, setTypeSelect] = useState('')
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
@@ -76,7 +76,7 @@ const AdminProduct = () => {
       return res;
     }
   );
-  
+
 
   const getAllProducts = async () => {
     const res = await ProductService.getAllProduct();
@@ -87,7 +87,7 @@ const AdminProduct = () => {
     queryKey: ['products'],
     queryFn: getAllProducts,
   });
-  
+
 
   const fetchGetDetailsProduct = async (rowSelected) => {
     if (!rowSelected) {
@@ -146,7 +146,7 @@ const AdminProduct = () => {
     setSearchText('');
     confirm(); // Gọi confirm để hiển thị tất cả dữ liệu
   };
-  
+
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -211,12 +211,12 @@ const AdminProduct = () => {
     const res = await ProductService.getAllTypeProduct();
     return res;
   };
-  
+
 
   const { data, isLoading, isSuccess, isError } = mutation;
   const { data: dataUpdated, isSuccess: isSuccessUpdated, isError: isErrorUpdated } = mutationUpdate;
   const { data: dataDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted } = mutationDeleted;
-  const {data: dataDeletedMany,isSuccess: isSuccessDeletedMany,isError: isErrorDeletedMany,} = mutationDeletedMany;
+  const { data: dataDeletedMany, isSuccess: isSuccessDeletedMany, isError: isErrorDeletedMany, } = mutationDeletedMany;
   const [deletedSuccessfully, setDeletedSuccessfully] = useState(false);
 
   const typeProduct = useQuery({
@@ -231,34 +231,34 @@ const AdminProduct = () => {
       title: 'Name',
       dataIndex: 'name',
       render: (text) => <a>{text}</a>,
-      sorter: (a, b) => a.name.length - b.name.length, 
-      ...getColumnSearchProps ('name')
+      sorter: (a, b) => a.name.length - b.name.length,
+      ...getColumnSearchProps('name')
     },
     {
       title: 'Price',
       dataIndex: 'price',
       sorter: (a, b) => a.price - b.price,
-        filters: [
-          {
-            text: 'Lớn hơn 10 triệu',
-            value: 'greater',
-          },
-          {
-            text: 'Nhỏ hơn 10 triệu',
-            value: 'less',
-          },
-        ],
-        onFilter: (value, record) => {
-          if (value === 'greater') {
-            return record.price >= 10000000; // Lọc giá >= 10 triệu
-          } else if (value === 'less') {
-            return record.price < 10000000; // Lọc giá < 10 triệu
-          }
-          return true; // Không lọc nếu không thỏa điều kiện
+      filters: [
+        {
+          text: 'Lớn hơn 10 triệu',
+          value: 'greater',
         },
-        render: (price) => `${price.toLocaleString()} VND`, // Định dạng giá tiền
+        {
+          text: 'Nhỏ hơn 10 triệu',
+          value: 'less',
+        },
+      ],
+      onFilter: (value, record) => {
+        if (value === 'greater') {
+          return record.price >= 10000000; // Lọc giá >= 10 triệu
+        } else if (value === 'less') {
+          return record.price < 10000000; // Lọc giá < 10 triệu
+        }
+        return true; // Không lọc nếu không thỏa điều kiện
       },
-      
+      render: (price) => `${price.toLocaleString()} VND`, // Định dạng giá tiền
+    },
+
     {
       title: 'Rating',
       dataIndex: 'rating',
@@ -267,13 +267,6 @@ const AdminProduct = () => {
     {
       title: 'Type',
       dataIndex: 'type',
-      filters: [
-        { text: 'Dell', value: 'Dell' },
-        { text: 'ASUS', value: 'ASUS' },
-        { text: 'Lenovo', value: 'Lenovo' },
-      ],
-      onFilter: (value, record) => record.type === value, // Lọc đúng type
-      render: (type) => type, // Hiển thị tên type
     },
     {
       title: 'Action',
@@ -358,7 +351,7 @@ const AdminProduct = () => {
       }
     );
   };
-  
+
   const handleOnChangeAvatar = async ({ fileList }) => {
     const file = fileList[0];
     if (!file.url && !file.preview) {
@@ -391,7 +384,7 @@ const AdminProduct = () => {
       type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
       countInStock: stateProduct.countInStock,
     };
-  
+
     mutation.mutate(params, {
       onSettled: () => {
         queryClient.invalidateQueries(['products']);
@@ -481,10 +474,10 @@ const AdminProduct = () => {
         </Button>
       </div>
       <div style={{ marginTop: '20px' }}>
-        
+
         <TableComponent
           deletedSuccessfully={deletedSuccessfully}
-          handleDeleteManyProducts = {handleDeleteManyProducts}
+          handleDeleteManyProducts={handleDeleteManyProducts}
           columns={columns}
           data={dataTable}
           pageType="AdminProduct.jsx"
@@ -535,7 +528,7 @@ const AdminProduct = () => {
               options={renderOptions(typeProduct?.data?.data)} // Sửa cú pháp options
             />
           </Form.Item>
-          {stateProduct.type === 'add_type' && ( 
+          {stateProduct.type === 'add_type' && (
             <Form.Item
               label="New type"
               name="newType"
@@ -626,7 +619,7 @@ const AdminProduct = () => {
         </Form>
       </ModalComponent>
 
-      <DrawerComponent 
+      <DrawerComponent
         title="Chi tiết sản phẩm"
         isOpen={isOpenDrawer}
         onClose={() => setIsOpenDrawer(false)}
@@ -743,12 +736,12 @@ const AdminProduct = () => {
         </Form>
       </DrawerComponent>
 
-      <ModalComponent 
+      <ModalComponent
         forceRender
         title="Xoá Sản Phẩm"
         open={isModalOpenDelete}
         onCancel={handleCancelDelete}
-        onOk = {handleDeleteProduct}
+        onOk={handleDeleteProduct}
       >
         <div>Bạn có chắc xoá sản phẩm này không ?</div>
       </ModalComponent>

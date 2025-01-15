@@ -139,7 +139,7 @@ const OrderAdmin = () => {
     },
   ];
 
-  // Hàm thay đổi trạng thái "Delivery Status" trực tiếp trong local state
+
   const handleChangeDeliveryStatus = (isDelivered, orderId) => {
     const updatedOrders = ordersData.map((order) =>
       order.key === orderId ? { ...order, isDelivered: isDelivered ? 'TRUE' : 'FALSE' } : order
@@ -155,8 +155,8 @@ const OrderAdmin = () => {
           columns={columns}
           dataSource={ordersData}
           loading={isLoadingOrders}
-          pagination={false} // Hiển thị toàn bộ đơn hàng
-          scroll={{ x: 'max-content', y: 600 }} // Cuộn dọc nếu quá dài
+          pagination={false}
+          scroll={{ x: 'max-content', y: 600 }}
         />
       </div>
     </div>

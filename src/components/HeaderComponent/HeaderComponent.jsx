@@ -54,7 +54,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
       {/* Logo Section */}
       <Col span={4} style={{ textAlign: 'left' }}>
         <WrapperTextHeader onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          DUYLAPTOP
+          LTK
         </WrapperTextHeader>
       </Col>
 

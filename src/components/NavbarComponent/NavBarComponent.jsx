@@ -4,7 +4,7 @@ import { WrapperLableText, WrapperTextValue, WrapperTextPrice, WrapperContent } 
 
 const NavBarComponent = () => {
   const onChange = (value) => {
-    console.log(value); 
+    console.log(value);
   };
 
   const renderContent = (type, options) => {
@@ -50,7 +50,7 @@ const NavBarComponent = () => {
     <div>
       <WrapperLableText>Lable</WrapperLableText>
       <WrapperContent>
-        {renderContent('text', ['ASUS', 'LENOVO', 'DELL'])}
+        {renderContent('text', ['VGA', 'RAM', 'CPU'])}
       </WrapperContent>
     </div>
   );
